@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 import org.json.simple.JSONObject;
 
 /**
@@ -11,12 +13,16 @@ public class TripPlanRequest {
 	private String start_time;
 	private String max_destination_time;
 	
+	
+	public ArrayList<Long> load_ids;
+	
 	public TripPlanRequest(JSONObject tripData) {
 		this.input_trip_id = (long) tripData.get("input_trip_id");
 		this.start_latitude = (double) tripData.get("start_latitude");
 		this.start_longitude = (double) tripData.get("start_longitude");
 		this.start_time = (String) tripData.get("start_time");
 		this.setMax_destination_time((String) tripData.get("max_destination_time"));
+		load_ids = new ArrayList<Long>();
 	}
 
 	/**

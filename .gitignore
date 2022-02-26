@@ -5,6 +5,7 @@ lib/
 
 *.jar
 *.class
+*.iml
 
 .classpath
 .project

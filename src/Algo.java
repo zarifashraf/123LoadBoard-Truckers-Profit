@@ -1,3 +1,10 @@
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.JSONValue;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -9,31 +16,28 @@ public class Algo {
 
     public static void main(String[] args) {
         Graph g = new Graph();
-        g.addVertex('A', Arrays.asList(new Vertex('B', 7), new Vertex('C', 8)));
-        g.addVertex('B', Arrays.asList(new Vertex('A', 7), new Vertex('F', 2)));
-        g.addVertex('C', Arrays.asList(new Vertex('A', 8), new Vertex('F', 6), new Vertex('G', 4)));
-        g.addVertex('D', Arrays.asList(new Vertex('F', 8)));
-        g.addVertex('E', Arrays.asList(new Vertex('H', 1)));
-        g.addVertex('F', Arrays.asList(new Vertex('B', 2), new Vertex('C', 6), new Vertex('D', 8), new Vertex('G', 9), new Vertex('H', 3)));
-        g.addVertex('G', Arrays.asList(new Vertex('C', 4), new Vertex('F', 9)));
-        g.addVertex('H', Arrays.asList(new Vertex('E', 1), new Vertex('F', 3)));
-        System.out.println(g.getShortestPath('A', 'H'));
+        //g.addVertex('A', Arrays.asList(new Vertex('B', 7), new Vertex('C', 8)));
+        //g.addVertex('B', Arrays.asList(new Vertex('A', 7), new Vertex('F', 2)));
+
+        //System.out.println(g.getShortestPath('A', 'H'));
+        LatLong currentLocation = new LatLong(3.222, -15.788);
+        g.createGraph(currentLocation, "/123Loadboard_CodeJam_2022_dataset.json");
     }
 
 }
 
 class Vertex implements Comparable<Vertex> {
 
-    private Character id;
+    private String id;
     private Integer distance;
 
-    public Vertex(Character id, Integer distance) {
+    public Vertex(String id, Integer distance) {
         super();
         this.id = id;
         this.distance = distance;
     }
 
-    public Character getId() {
+    public String getId() {
         return id;
     }
 
@@ -41,7 +45,7 @@ class Vertex implements Comparable<Vertex> {
         return distance;
     }
 
-    public void setId(Character id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -100,23 +104,23 @@ class Vertex implements Comparable<Vertex> {
 
 class Graph {
 
-    private final Map<Character, List<Vertex>> vertices;
+    private final Map<String, List<Vertex>> vertices;
 
     public Graph() {
-        this.vertices = new HashMap<Character, List<Vertex>>();
+        this.vertices = new HashMap<String, List<Vertex>>();
     }
 
-    public void addVertex(Character character, List<Vertex> vertex) {
-        this.vertices.put(character, vertex);
+    public void addVertex(String string, List<Vertex> vertex) {
+        this.vertices.put(string, vertex);
     }
 
-    public List<Character> getShortestPath(Character start, Character finish) {
-        final Map<Character, Integer> distances = new HashMap<Character, Integer>();
-        final Map<Character, Vertex> previous = new HashMap<Character, Vertex>();
+    public List<String> getShortestPath(String start, String finish) {
+        final Map<String, Integer> distances = new HashMap<String, Integer>();
+        final Map<String, Vertex> previous = new HashMap<String, Vertex>();
         PriorityQueue<Vertex> nodes = new PriorityQueue<Vertex>();
 
-        for(Character vertex : vertices.keySet()) {
-            if (vertex == start) {
+        for(String vertex : vertices.keySet()) {
+            if (vertex.equalsIgnoreCase(start)) {
                 distances.put(vertex, 0);
                 nodes.add(new Vertex(vertex, 0));
             } else {
@@ -129,7 +133,7 @@ class Graph {
         while (!nodes.isEmpty()) {
             Vertex smallest = nodes.poll();
             if (smallest.getId() == finish) {
-                final List<Character> path = new ArrayList<Character>();
+                final List<String> path = new ArrayList<String>();
                 while (previous.get(smallest.getId()) != null) {
                     path.add(smallest.getId());
                     smallest = previous.get(smallest.getId());
@@ -160,7 +164,44 @@ class Graph {
             }
         }
 
-        return new ArrayList<Character>(distances.keySet());
+        return new ArrayList<String>(distances.keySet());
+    }
+
+    public void createGraph(LatLong startLocation , String json) {
+
+        JSONArray jsonarray = null;
+        try {
+            jsonarray = (JSONArray) JSONValue.parse(new FileReader(new File("util").getAbsoluteFile().toString()
+                    + json));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        for (Object o : jsonarray) {
+
+            JSONObject load = (JSONObject) o;
+
+            double origin_latitude = (double) load.get("origin_latitude");
+            double origin_longitude = (double) load.get("origin_longitude");
+            String origin_city = (String) load.get("origin_city");
+
+            double destination_latitude = (double) load.get("destination_latitude");
+            double destination_longitude = (double) load.get("destination_longitude");
+            String destination_city = (String) load.get("destination_city");
+
+            long amount = (long) load.get("amount");
+
+            // calc starting point to origin distance
+            // calc origin to destination distance
+
+            // add vertex from starting point to origin, weight is the -ve of distance
+            // add vertex from origin to destination, weight is the (reward - distance)
+
+
+            Graph g = new Graph();
+            g.addVertex("Start", Arrays.asList(new Vertex(origin_city, 7)));
+            g.addVertex(origin_city, Arrays.asList(new Vertex(destination_city, 7)));
+        }
     }
 
 }

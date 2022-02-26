@@ -21,10 +21,16 @@ import com.google.gson.JsonParser;
 
 public class TP {
 
+	/** miles per hour */
+	public static final double TRUCK_SPEED = 55.0;
+	/** $ per mile */
+	public static final double FUEL_COST_PER_MILE = 0.4;
+	
+	
 	public static void main(String[] args) {
 		
 		
-		// Load load data
+		// Load load data from json
 		List<Load> loads = new ArrayList<Load>();
 		
 		try {
@@ -76,8 +82,15 @@ public class TP {
 		System.out.printf("Loaded %d trips from s300 sample file.\n", trips2.size());
 		
 		
-		System.out.println(loads.get(0));
-		System.out.println(trips.get(0));
+		//System.out.println(loads.get(1));
+		//System.out.println(trips.get(0));
+		
+		/*
+		testGeoDist(loads.get(1).getOriginLatitude(),
+					loads.get(1).getOriginLongitude(),
+					loads.get(1).getDestinationLatitude(),
+					loads.get(1).getDestinationLongitude());
+		*/
 		
 		
 		// Begin calculations
@@ -125,6 +138,19 @@ public class TP {
 		
 		
 		
+	}
+	
+	
+	@SuppressWarnings("unused")
+	private static void testGeoDist(double lat1, double lon1, double lat2, double lon2) {
+		System.out.println(lat1);
+		System.out.println(lon1);
+		System.out.println(lat2);
+		System.out.println(lon2);
+		double dist = Utils.geoDist(lat1, lon1, lat2, lon2);
+		System.out.println("Dist in miles: " + dist);
+		System.out.println("Dist in meters: " + Utils.milesToMeters(dist));
+		System.out.println("Dist in km    : " + Utils.milesToMeters(dist) / 1000.0);
 	}
 
 

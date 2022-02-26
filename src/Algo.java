@@ -16,10 +16,15 @@ public class Algo {
 
     public static void main(String[] args) {
         Graph g = new Graph();
-        //g.addVertex('A', Arrays.asList(new Vertex('B', 7), new Vertex('C', 8)));
-        //g.addVertex('B', Arrays.asList(new Vertex('A', 7), new Vertex('F', 2)));
-
-        //System.out.println(g.getShortestPath('A', 'H'));
+        g.addVertex("A", Arrays.asList(new Vertex("B", 7.0), new Vertex("C", 8.0)));
+        g.addVertex("B", Arrays.asList(new Vertex("A", 7.0), new Vertex("F", 2.0)));
+        g.addVertex("C", Arrays.asList(new Vertex("A", 8.0), new Vertex("F", 6.0), new Vertex("G", 4.0)));
+        g.addVertex("D", Arrays.asList(new Vertex("F", 8.0)));
+        g.addVertex("E", Arrays.asList(new Vertex("H", 1.0)));
+        g.addVertex("F", Arrays.asList(new Vertex("B", 2.0), new Vertex("C", 6.0), new Vertex("D", 8.0), new Vertex("G", 9.0), new Vertex("H", 3.0)));
+        g.addVertex("G", Arrays.asList(new Vertex("C", 4.0), new Vertex("F", 9.0)));
+        g.addVertex("H", Arrays.asList(new Vertex("E", 1.0), new Vertex("F", 3.0)));
+        System.out.println(g.getShortestPath("A", "H"));
         LatLong currentLocation = new LatLong(3.222, -15.788);
         g.createGraph(currentLocation, "/123Loadboard_CodeJam_2022_dataset.json");
     }
@@ -29,9 +34,9 @@ public class Algo {
 class Vertex implements Comparable<Vertex> {
 
     private String id;
-    private Integer distance;
+    private Double distance;
 
-    public Vertex(String id, Integer distance) {
+    public Vertex(String id, Double distance) {
         super();
         this.id = id;
         this.distance = distance;
@@ -41,7 +46,7 @@ class Vertex implements Comparable<Vertex> {
         return id;
     }
 
-    public Integer getDistance() {
+    public Double getDistance() {
         return distance;
     }
 
@@ -49,7 +54,7 @@ class Vertex implements Comparable<Vertex> {
         this.id = id;
     }
 
-    public void setDistance(Integer distance) {
+    public void setDistance(Double distance) {
         this.distance = distance;
     }
 
@@ -115,17 +120,17 @@ class Graph {
     }
 
     public List<String> getShortestPath(String start, String finish) {
-        final Map<String, Integer> distances = new HashMap<String, Integer>();
+        final Map<String, Double> distances = new HashMap<String, Double>();
         final Map<String, Vertex> previous = new HashMap<String, Vertex>();
         PriorityQueue<Vertex> nodes = new PriorityQueue<Vertex>();
 
         for(String vertex : vertices.keySet()) {
             if (vertex.equalsIgnoreCase(start)) {
-                distances.put(vertex, 0);
-                nodes.add(new Vertex(vertex, 0));
+                distances.put(vertex, 0.0);
+                nodes.add(new Vertex(vertex, 0.0));
             } else {
-                distances.put(vertex, Integer.MAX_VALUE);
-                nodes.add(new Vertex(vertex, Integer.MAX_VALUE));
+                distances.put(vertex, Double.MAX_VALUE);
+                nodes.add(new Vertex(vertex, Double.MAX_VALUE));
             }
             previous.put(vertex, null);
         }
@@ -141,12 +146,12 @@ class Graph {
                 return path;
             }
 
-            if (distances.get(smallest.getId()) == Integer.MAX_VALUE) {
+            if (distances.get(smallest.getId()) == Double.MAX_VALUE) {
                 break;
             }
 
             for (Vertex neighbor : vertices.get(smallest.getId())) {
-                Integer alt = distances.get(smallest.getId()) + neighbor.getDistance();
+                Double alt = distances.get(smallest.getId()) + neighbor.getDistance();
                 if (alt < distances.get(neighbor.getId())) {
                     distances.put(neighbor.getId(), alt);
                     previous.put(neighbor.getId(), smallest);
@@ -183,13 +188,15 @@ class Graph {
 
             double origin_latitude = (double) load.get("origin_latitude");
             double origin_longitude = (double) load.get("origin_longitude");
+            LatLong originLatLong = new LatLong(origin_latitude, origin_longitude);
             String origin_city = (String) load.get("origin_city");
 
             double destination_latitude = (double) load.get("destination_latitude");
             double destination_longitude = (double) load.get("destination_longitude");
+            LatLong destLatLong = new LatLong(destination_latitude, destination_longitude);
             String destination_city = (String) load.get("destination_city");
 
-            long amount = (long) load.get("amount");
+            double amount = (long) load.get("amount");
 
             // calc starting point to origin distance
             // calc origin to destination distance
@@ -197,10 +204,13 @@ class Graph {
             // add vertex from starting point to origin, weight is the -ve of distance
             // add vertex from origin to destination, weight is the (reward - distance)
 
+            double startToOrigin = Utils.geoDist(startLocation.getLatitude(), startLocation.getLongitude(),origin_latitude, origin_longitude);
+            double originToDest = Utils.geoDist(origin_latitude, origin_longitude, destination_latitude, destination_longitude);
+
 
             Graph g = new Graph();
-            g.addVertex("Start", Arrays.asList(new Vertex(origin_city, 7)));
-            g.addVertex(origin_city, Arrays.asList(new Vertex(destination_city, 7)));
+            g.addVertex("Start", Arrays.asList(new Vertex(origin_city, 0 - startToOrigin)));
+            g.addVertex(origin_city, Arrays.asList(new Vertex(destination_city, amount - originToDest)));
         }
     }
 

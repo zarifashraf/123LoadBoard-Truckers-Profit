@@ -1,11 +1,8 @@
 bin/
-lib/
 .idea/
 
 output/
 
-
-*.jar
 *.class
 *.iml
 

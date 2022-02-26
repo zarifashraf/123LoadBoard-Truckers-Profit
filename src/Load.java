@@ -116,4 +116,21 @@ public class Load {
 	public String getPickupDateTime() {
 		return pickup_date_time;
 	}
+	
+	@Override
+	public String toString() {
+		return "{\n"
+				+ "\t\"load_id\": " + this.load_id
+				+ ",\n\t\"origin_city\": " + this.origin_city
+				+ ",\n\t\"origin_state\": " + this.origin_state
+				+ ",\n\t\"origin_latitude\": " + this.origin_latitude
+				+ ",\n\t\"origin_longitude\": " + this.origin_longitude
+				+ ",\n\t\"destination_city\": " + this.destination_city
+				+ ",\n\t\"destination_state\": " + this.destination_state
+				+ ",\n\t\"destination_latitude\": " + this.destination_latitude
+				+ ",\n\t\"destination_longitude\": " + this.destination_longitude
+				+ ",\n\t\"amount\": " + this.amount
+				+ ",\n\t\"pickup_date_time\": " + this.pickup_date_time
+				+ "\n}";
+	}
 }

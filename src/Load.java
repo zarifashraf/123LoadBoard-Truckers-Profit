@@ -23,6 +23,8 @@ public class Load {
 	private long amount;
 	private String pickup_date_time;
 	
+	// this is the load class
+	
 	
 	
 }

@@ -19,7 +19,8 @@ public class TP {
 		List<Load> loads = new ArrayList<Load>();
 		
 		try {
-		JSONArray jsonarray = (JSONArray) parser.parse(new FileReader("c:\\123Loadboard_CodeJam_2022_dataset.json"));
+		JSONArray jsonarray = (JSONArray) parser.parse(new FileReader(new File("util").getAbsoluteFile().toString()
+				+"/123Loadboard_CodeJam_2022_dataset.json"));
 		
 		loads = jsonarray;
 			

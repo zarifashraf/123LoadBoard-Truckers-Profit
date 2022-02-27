@@ -152,7 +152,7 @@ class Graph {
 
             for (Vertex neighbor : vertices.get(smallest.getId())) {
                 Double alt = distances.get(smallest.getId()) + neighbor.getDistance();
-                if (alt < distances.get(neighbor.getId())) {
+                if (distances.get(neighbor.getId()) != null && alt < distances.get(neighbor.getId())) {
                     distances.put(neighbor.getId(), alt);
                     previous.put(neighbor.getId(), smallest);
 
@@ -188,12 +188,10 @@ class Graph {
 
             double origin_latitude = (double) load.get("origin_latitude");
             double origin_longitude = (double) load.get("origin_longitude");
-            LatLong originLatLong = new LatLong(origin_latitude, origin_longitude);
             String origin_city = (String) load.get("origin_city");
 
             double destination_latitude = (double) load.get("destination_latitude");
             double destination_longitude = (double) load.get("destination_longitude");
-            LatLong destLatLong = new LatLong(destination_latitude, destination_longitude);
             String destination_city = (String) load.get("destination_city");
 
             double amount = (long) load.get("amount");
@@ -211,6 +209,7 @@ class Graph {
             Graph g = new Graph();
             g.addVertex("Start", Arrays.asList(new Vertex(origin_city, 0 - startToOrigin)));
             g.addVertex(origin_city, Arrays.asList(new Vertex(destination_city, amount - originToDest)));
+            System.out.println(g.getShortestPath("Start", "Muncy"));
         }
     }
 

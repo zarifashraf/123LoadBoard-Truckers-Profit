@@ -3,6 +3,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
@@ -94,10 +95,11 @@ public class Utils
 			return cost;
 		}
 		
-		//Time taken to cover from one stop to another
-		public static double timeOfPath(double miles) {
-			double time = 1;
-			time = miles / TRUCK_SPEED;
+		//Time taken in seconds to cover from one stop to another
+		public static int timeOfPath(double miles) {
+			int time = 1;
+			time = (int) Math.round(miles / (TRUCK_SPEED/3600));
+	        
 			return time;
 		}
 		
@@ -115,6 +117,29 @@ public class Utils
 			return apm;
 			
 		}
+		
+	  // Date and time when truck reaches destination for a load
+		public static LocalDateTime dropOffTime(Load load) {
+			String pickuptime = load.getPickupDateTime();
+			
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+	        LocalDateTime pickupdt = LocalDateTime.parse(pickuptime, formatter);
+	        
+	        double olat = load.getOriginLatitude();
+			double olong = load.getOriginLongitude();
+			double dlat = load.getDestinationLatitude();
+			double dlong = load.getDestinationLongitude();
+			
+			double meters = geoDist(olat, olong, dlat, dlong);
+			double miles = metersToMiles(meters);
+			
+			int tt = timeOfPath(miles);
+	        
+	        LocalDateTime dropoffdt = pickupdt.plusSeconds(tt);
+			
+			return dropoffdt;
+		}
+		
 	
 	/**
 	 * Convert a JSONArray object into an ArrayList object.

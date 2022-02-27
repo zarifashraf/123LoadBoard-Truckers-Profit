@@ -26,11 +26,6 @@ import com.google.gson.JsonParser;
 
 import java.util.Date;
 public class TP {
-
-	/** miles per hour */
-	public static final double TRUCK_SPEED = 55.0;
-	/** $ per mile */
-	public static final double FUEL_COST_PER_MILE = 0.4;
 	
 	
 	public static void main(String[] args) {
@@ -136,24 +131,6 @@ public class TP {
 		
 		
 	}
-	
-	// cost incurred to travel from one stop to another 
-	public static double costOfPath(double miles) {
-		double cost = 0;
-		cost = miles * FUEL_COST_PER_MILE;
-		return cost;
-	}
-	
-	//Time taken to cover from one stop to another
-	public static double timeOfPath(double miles) {
-		double time = 1;
-		time = miles / TRUCK_SPEED;
-		return time;
-	}
-
-	
-	
-	
 	
 	
 	@SuppressWarnings("unused")

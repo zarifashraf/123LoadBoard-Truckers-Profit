@@ -11,7 +11,10 @@ import org.json.simple.JSONArray;
 
 public class Utils
 {
-	
+	/** miles per hour */
+	public static final double TRUCK_SPEED = 55.0;
+	/** $ per mile */
+	public static final double FUEL_COST_PER_MILE = 0.4;
 	/**
 	 * Geodesic distance function. Used to calculate the distance between two
 	 * points, given the latitude and longitude of those two points.
@@ -82,7 +85,36 @@ public class Utils
 		 
 		 return difference_In_Seconds;
 	 }
-
+	 
+	 
+	// cost incurred to travel from one stop to another 
+		public static double costOfPath(double miles) {
+			double cost = 0;
+			cost = miles * FUEL_COST_PER_MILE;
+			return cost;
+		}
+		
+		//Time taken to cover from one stop to another
+		public static double timeOfPath(double miles) {
+			double time = 1;
+			time = miles / TRUCK_SPEED;
+			return time;
+		}
+		
+	// amount earned per mile
+		public static double amountPerMile(Load load) {
+			double olat = load.getOriginLatitude();
+			double olong = load.getOriginLongitude();
+			double dlat = load.getDestinationLatitude();
+			double dlong = load.getDestinationLongitude();
+			
+			double meters = geoDist(olat, olong, dlat, dlong);
+			double miles = metersToMiles(meters);
+			
+			double apm = (load.getAmount() / miles);
+			return apm;
+			
+		}
 	
 	/**
 	 * Convert a JSONArray object into an ArrayList object.

@@ -4,7 +4,13 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,7 +24,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 
-
+import java.util.Date;
 public class TP {
 
 	/** miles per hour */
@@ -28,7 +34,6 @@ public class TP {
 	
 	
 	public static void main(String[] args) {
-		
 		
 		// Load load data from json
 		List<Load> loads = new ArrayList<Load>();
@@ -57,16 +62,8 @@ public class TP {
 		List<TripPlanRequest> trips = new ArrayList<TripPlanRequest>();
 		List<TripPlanRequest> trips2 = new ArrayList<TripPlanRequest>();
 		try {
-			JSONArray jsonarray = (JSONArray) JSONValue.parse(new FileReader(new File("util").getAbsoluteFile().toString()
-			   + "/123Loadboard_Codejam_2022_input_sample.json"));
 			JSONArray jsonarray2 = (JSONArray) JSONValue.parse(new FileReader(new File("util").getAbsoluteFile().toString()
 			   + "/123Loadboard_Codejam_2022_input_sample_s300.json"));
-		
-			for (Object o : jsonarray) {
-				JSONObject tripdata = (JSONObject) o;
-				TripPlanRequest tpr = new TripPlanRequest(tripdata);
-				trips.add(tpr);
-			}
 		
 			for (Object o : jsonarray2) {
 				JSONObject tripdata = (JSONObject) o;
@@ -78,8 +75,8 @@ public class TP {
 			e.printStackTrace();
 		}
 		
-		System.out.printf("Loaded %d trips from s200 sample file.\n", trips.size());
 		System.out.printf("Loaded %d trips from s300 sample file.\n", trips2.size());
+		
 		
 		
 		//System.out.println(loads.get(1));
@@ -122,7 +119,7 @@ public class TP {
 		}
 		// pretify json
 		Gson gson = new GsonBuilder().setPrettyPrinting().create();
-		JsonElement je = JsonParser.parseString(json_output);
+		JsonElement je = new JsonParser().parse(json_output);
 		String pretty_json_output = gson.toJson(je);
 		// write json to file
 		//System.out.println(json_output);
@@ -139,6 +136,24 @@ public class TP {
 		
 		
 	}
+	
+	// cost incurred to travel from one stop to another 
+	public static double costOfPath(double miles) {
+		double cost = 0;
+		cost = miles * FUEL_COST_PER_MILE;
+		return cost;
+	}
+	
+	//Time taken to cover from one stop to another
+	public static double timeOfPath(double miles) {
+		double time = 1;
+		time = miles / TRUCK_SPEED;
+		return time;
+	}
+
+	
+	
+	
 	
 	
 	@SuppressWarnings("unused")
